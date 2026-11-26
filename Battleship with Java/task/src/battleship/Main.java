@@ -12,7 +12,7 @@ public class Main {
 
         for (Ship ship: Ship.values()) {
             boolean placed = false;
-            System.out.printf("Enter the coordinates of the %s (%d cells):", ship.getName(),ship.getSize());
+            System.out.printf("Enter the coordinates of the %s (%d cells):\n", ship.getName(),ship.getSize());
 
             while(!placed) {
                 try {
@@ -20,8 +20,14 @@ public class Main {
                     Coordinate end = new Coordinate(sc.next());
                     // printParts(start, end);
                     int length = calculateLength(start,end);
-                    if (length == ship.getSize()){
-
+                    if (length == ship.getSize() && field.canPlace(start,end)){
+                        field.placeShip(start,end);
+                        field.printGrid();
+                        placed = true;
+                    } else if(length != ship.getSize()){
+                        System.out.println("Error! Wrong length of the " + ship.getName() + " Try again:");
+                    } else if (!field.canPlace(start,end)){
+                        System.out.println("Error! Wrong ship location! Try again:");
                     }
 
 
@@ -48,8 +54,8 @@ public class Main {
         int col1 = cord1.getColumn();
         int row2 = cord2.getRow();
         int col2 = cord2.getColumn();
-        System.out.println("Length: " + calculateLength(cord1, cord2));
-        char r = (char) ((char) 'A' + (char) row1);
+        //System.out.println("Length: " + calculateLength(cord1, cord2));
+        char r = (char) ('A' + (char) row1);
         if (row1 == row2) {
             if (col1 > col2) {
                 System.out.print("Parts: " + r + (col1 + 1) + " ");
@@ -68,14 +74,14 @@ public class Main {
         if (col1 == col2){
             if (row1 < row2){
                 for (int i = row1;i < row2 + 1; i++ ){
-                    char d = (char) ((char) 'A' +  i);
+                    char d = (char) ('A' +  i);
                     System.out.println("" + d + (col1+1));
                 }
 
             }
             if (row1 > row2) {
                 for (int i = row1;i > row2 - 1; i-- ){
-                    char d = (char) ((char) 'A' +  i);
+                    char d = (char) ('A' +  i);
                     System.out.println("" + d + (col1+1));
                 }
             }
