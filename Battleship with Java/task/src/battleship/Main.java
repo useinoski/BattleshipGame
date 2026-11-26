@@ -35,28 +35,33 @@ public class Main {
                 }
             }
         }
-        boolean validShot = false;
-        startGame(field);
-        while(!validShot)
-            try {
 
-                Coordinate shot = new Coordinate(sc.next());
-                printTakeShot();
-                String checkShot = field.shoot(shot);
-                if (checkShot.equals("hit")){
-                    field.printGrid();
-                    System.out.println("You hit a ship!");
-                    validShot = true;
-                } else if (checkShot.equals("miss")){
-                    field.printGrid();
-                    System.out.println("You missed!");
-                    validShot = true;
+        boolean gameWon = false;
+        startGame(field);
+        printTakeShot();
+        while (!gameWon) {
+
+                try {
+
+                    Coordinate shot = new Coordinate(sc.next());
+
+                    String checkShot = field.shoot(shot);
+
+                    field.printFogGrid();
+                    if (checkShot.equals("hit")) {
+                        System.out.println("You hit a ship! Try again:");
+
+                    } else if (checkShot.equals("miss")) {
+
+                        System.out.println("You missed. Try again:");
+
+                    }
+
+                } catch (InvalidCoordinateException e) {
+                    System.out.println("Error! You entered the wrong coordinates! Try again:");
                 }
 
-            }
-            catch (InvalidCoordinateException e) {
-                System.out.println("Error! You entered the wrong coordinates! Try again:");
-            }
+        }
 
     }
 
@@ -69,8 +74,7 @@ public class Main {
 
     public static void startGame(Battlefield field){
         System.out.println("The game starts!");
-        field.printGrid();
-        System.out.println("Take a shot!");
+        field.printFogGrid();
     }
 
 

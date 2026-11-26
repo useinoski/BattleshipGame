@@ -1,6 +1,9 @@
 package battleship;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class is the game field class that will hold the grid and the placements of the ships on it
  */
@@ -10,21 +13,44 @@ public class Battlefield {
      * The grid array which is 10*10 will be filled in game
      */
     private final char[][] grid = new char[10][10];
-    CellState state;
+    private final char[][] fogGrid = new char[10][10];
+    private List<PlacedShip> placedShips = new ArrayList<>();
+
+
 
     public Battlefield() {
-        fillFogGrid();
+        fillFogGrid(grid);
+        fillFogGrid(fogGrid);
     }
 
     /**
      * This fills the grid Array with the fog of war(empty grid)
      */
-    private void fillFogGrid() {
+    private void fillFogGrid(char[][] grid) {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 char fog = CellState.EMPTY.getState();
                 grid[i][j] = fog;
             }
+        }
+    }
+
+    public void printFogGrid() {
+        char letter ='A';
+        System.out.print("  ");
+        for (int i = 1; i <= fogGrid.length; i++){
+            System.out.print(i + " ");
+        }
+
+        System.out.println();
+
+        for (int i = 0; i < fogGrid.length; i++) {
+            System.out.print((char)(letter + i) + " ");
+            for (int j = 0; j <fogGrid[i].length; j++){
+                System.out.print(fogGrid[i][j] + " ");
+
+            }
+            System.out.println();
         }
     }
 
@@ -61,11 +87,14 @@ public class Battlefield {
                 if (col1 > col2) {
                     for (int i = col1; i >= col2; i--) {
                         grid[row1][i] = CellState.SHIP.getState();
+
+
                     }
                 }
                 if (col1 < col2) {
                     for (int i = col1; i <= col2; i++) {
                         grid[row1][i] = CellState.SHIP.getState();
+
                     }
                 }
             }
@@ -86,6 +115,8 @@ public class Battlefield {
                 }
             }
         }
+        PlacedShip ship = new PlacedShip(start,end);
+        placedShips.add(ship);
 
 
     }
@@ -130,10 +161,12 @@ public class Battlefield {
         int col = cord.getColumn();
         if (grid[row][col] == CellState.SHIP.getState()){
             grid[row][col] = CellState.HIT.getState();
+            fogGrid[row][col] = CellState.HIT.getState();
             return "hit";
         }
         if (grid[row][col] == CellState.EMPTY.getState()){
             grid[row][col] = CellState.MISS.getState();
+            fogGrid[row][col] = CellState.MISS.getState();
             return "miss";
         }
         return "";

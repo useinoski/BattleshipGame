@@ -8,6 +8,7 @@
       <module name="Battleship_with_Java.Battleship_with_Java-task-build-reports-tests.main" target="23" />
       <module name="Battleship_with_Java.Battleship_with_Java-task-build-test-results.main" target="23" />
       <module name="Battleship_with_Java.Battleship_with_Java-task-build-tmp.main" target="23" />
+      <module name="Battleship_with_Java.Battleship_with_Java-task-out.main" target="23" />
       <module name="Battleship_with_Java.Battleship_with_Java-task.main" target="23" />
       <module name="Battleship_with_Java.util.main" target="23" />
     </bytecodeTargetLevel>

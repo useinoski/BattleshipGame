@@ -7,6 +7,11 @@ public class Coordinate {
     private final int row;
     private final int column;
 
+    public Coordinate(int row,int column){
+        this.row = row;
+        this.column = column;
+    }
+
     public Coordinate(String coordinates) {
         if (coordinates == null || coordinates.length() < 2) {
             throw new InvalidCoordinateException("Error!");
