@@ -124,6 +124,20 @@ public class Battlefield {
         return true;
     }
 
+    public String shoot(Coordinate cord) {
+
+        int row = cord.getRow();
+        int col = cord.getColumn();
+        if (grid[row][col] == CellState.SHIP.getState()){
+            grid[row][col] = CellState.HIT.getState();
+            return "hit";
+        }
+        if (grid[row][col] == CellState.EMPTY.getState()){
+            grid[row][col] = CellState.MISS.getState();
+            return "miss";
+        }
+        return "";
+    }
 
 
 }

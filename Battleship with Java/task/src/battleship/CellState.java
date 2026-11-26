@@ -1,7 +1,7 @@
 package battleship;
 
 public enum CellState {
-    EMPTY('~'),SHIP('O'),HIT('x'),MISS('-');
+    EMPTY('~'),SHIP('O'),HIT('X'),MISS('M');
     public final char state;
 
     CellState(char state) {

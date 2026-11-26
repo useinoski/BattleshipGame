@@ -13,7 +13,6 @@ public class Main {
         for (Ship ship: Ship.values()) {
             boolean placed = false;
             System.out.printf("Enter the coordinates of the %s (%d cells):\n", ship.getName(),ship.getSize());
-
             while(!placed) {
                 try {
                     Coordinate start = new Coordinate(sc.next());
@@ -34,15 +33,45 @@ public class Main {
                 } catch (InvalidCoordinateException e) {
                     System.out.println(e.getMessage());
                 }
-
             }
         }
+        boolean validShot = false;
+        startGame(field);
+        while(!validShot)
+            try {
+
+                Coordinate shot = new Coordinate(sc.next());
+                printTakeShot();
+                String checkShot = field.shoot(shot);
+                if (checkShot.equals("hit")){
+                    field.printGrid();
+                    System.out.println("You hit a ship!");
+                    validShot = true;
+                } else if (checkShot.equals("miss")){
+                    field.printGrid();
+                    System.out.println("You missed!");
+                    validShot = true;
+                }
+
+            }
+            catch (InvalidCoordinateException e) {
+                System.out.println("Error! You entered the wrong coordinates! Try again:");
+            }
 
     }
 
 
 
 
+    public static void printTakeShot(){
+        System.out.println("Take a shot!");
+    }
+
+    public static void startGame(Battlefield field){
+        System.out.println("The game starts!");
+        field.printGrid();
+        System.out.println("Take a shot!");
+    }
 
 
     public static boolean isSizeBiggerThanLength(int length,int size){
@@ -120,6 +149,7 @@ public class Main {
             throw new InvalidCoordinateException("Error!");
         return length;
     }
+
 
 
 }
