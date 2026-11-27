@@ -18,6 +18,11 @@ public class Battlefield {
 
 
 
+
+    public List<PlacedShip> getPlacedShips() {
+        return placedShips;
+    }
+
     public Battlefield() {
         fillFogGrid(grid);
         fillFogGrid(fogGrid);
@@ -78,57 +83,11 @@ public class Battlefield {
     }
 
     public void placeShip(Coordinate start,Coordinate end){
-        int row1 = start.getRow();
-        int col1 = start.getColumn();
-        int row2 = end.getRow();
-        int col2 = end.getColumn();
-        switch(horizontalOrVertical(start, end)){
-            case "horizontal" -> {
-                if (col1 > col2) {
-                    for (int i = col1; i >= col2; i--) {
-                        grid[row1][i] = CellState.SHIP.getState();
-
-
-                    }
-                }
-                if (col1 < col2) {
-                    for (int i = col1; i <= col2; i++) {
-                        grid[row1][i] = CellState.SHIP.getState();
-
-                    }
-                }
-            }
-            case "vertical" ->
-            {
-                if (row1 < row2){
-                    for (int i = row1;i <= row2 ; i++ ){
-                        grid[i][col1] = CellState.SHIP.getState();
-
-                    }
-
-                }
-                if (row1 > row2) {
-                    for (int i = row1;i >= row2 ; i-- ){
-                        grid[i][col1] = CellState.SHIP.getState();
-
-                    }
-                }
-            }
-        }
         PlacedShip ship = new PlacedShip(start,end);
+        for(Coordinate cord: ship.getParts()){
+            grid[cord.getRow()][cord.getColumn()] = CellState.SHIP.getState();
+        }
         placedShips.add(ship);
-
-
-    }
-
-    private static String horizontalOrVertical(Coordinate start,Coordinate end){
-        int row1 = start.getRow();
-        int col1 = start.getColumn();
-        int row2 = end.getRow();
-        int col2 = end.getColumn();
-        if (row1 == row2){
-            return "horizontal";
-        } else return "vertical";
     }
 
     public boolean canPlace(Coordinate start,Coordinate end){
@@ -157,20 +116,61 @@ public class Battlefield {
 
     public String shoot(Coordinate cord) {
 
-        int row = cord.getRow();
-        int col = cord.getColumn();
-        if (grid[row][col] == CellState.SHIP.getState()){
-            grid[row][col] = CellState.HIT.getState();
-            fogGrid[row][col] = CellState.HIT.getState();
+        int r = cord.getRow();
+        int c = cord.getColumn();
+        if (grid[r][c] == CellState.SHIP.getState()){
+            grid[r][c] = CellState.HIT.getState();
+            fogGrid[r][c] = CellState.HIT.getState();
+            PlacedShip ship = findShip(cord);
+            if (allSunk()){
+                return "won";
+            }
+            if(isSunk(ship)){
+                return "sank";
+            }
+
             return "hit";
         }
-        if (grid[row][col] == CellState.EMPTY.getState()){
-            grid[row][col] = CellState.MISS.getState();
-            fogGrid[row][col] = CellState.MISS.getState();
-            return "miss";
+
+        if (grid[r][c] == CellState.HIT.getState()){
+            return "hit";
         }
-        return "";
+        if (grid[r][c] == CellState.EMPTY.getState()){
+            grid[r][c] = CellState.MISS.getState();
+            fogGrid[r][c] = CellState.MISS.getState();
+        }
+        return "miss";
     }
+
+    public boolean isSunk(PlacedShip ship){
+        for (Coordinate cord: ship.getParts()){
+            if(grid[cord.getRow()][cord.getColumn()] != CellState.HIT.getState()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public PlacedShip findShip(Coordinate shot){
+        for (PlacedShip ship:placedShips){
+            for (Coordinate cord:ship.getParts()){
+                if (cord.getRow() == shot.getRow() && cord.getColumn() == shot.getColumn()) {
+                    return ship;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean allSunk(){
+        for(PlacedShip ship: placedShips){
+            if (!isSunk(ship)){
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 
 }

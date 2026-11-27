@@ -6,10 +6,72 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Battlefield field = new Battlefield();
-        field.printGrid();
+        Battlefield field1 = new Battlefield();
+        Battlefield field2 = new Battlefield();
+
+        System.out.println("Player 1, place your ships on the game field");
+        field1.printGrid();
+        placeShips(sc,field1);
+        pressEnter(sc);
+        System.out.println("Player 2, place your ships on the game field");
+        field2.printGrid();
+        placeShips(sc,field2);
+        pressEnter(sc);
+
+        Battlefield current = field1;
+        Battlefield opponent = field2;
+        int playerNumber = 1;
 
 
+        boolean gameWon = false;
+        while (!gameWon) {
+
+            opponent.printFogGrid();
+            System.out.println("---------------------");
+            current.printGrid();
+            System.out.println("Player " + playerNumber +", it's your turn:");
+
+                try {
+                    Coordinate shot = new Coordinate(sc.next());
+                    String checkShot = opponent.shoot(shot);
+
+                    switch (checkShot) {
+                        case "hit" -> System.out.println("You hit a ship\n" +
+                                "Player \" + playerNumber +\", it's your turn:\"");
+                        case "miss" -> System.out.println("You missed!\n" +
+                                "Player " + playerNumber +", it's your turn:");
+                        case "sank" -> System.out.println("You sank a ship!\n" +
+                                "Player " + playerNumber +", it's your turn:");
+                        case "won" -> {
+                            System.out.println("You sank the last ship. You won. Congratulations!");
+                            gameWon =true;
+                        }
+
+                    }
+
+                } catch (InvalidCoordinateException e) {
+                    System.out.println("Error! You entered the wrong coordinates! Try again:");
+                }
+
+                pressEnter(sc);
+                Battlefield temp = current;
+                current = opponent;
+                opponent = temp;
+
+
+        }
+
+        sc.close();
+
+    }
+
+    public static void pressEnter(Scanner sc){
+        System.out.println("Press Enter and pass the move to another player\n...");
+        sc.nextLine();
+        sc.nextLine();
+    }
+
+    public static void placeShips(Scanner sc, Battlefield field){
         for (Ship ship: Ship.values()) {
             boolean placed = false;
             System.out.printf("Enter the coordinates of the %s (%d cells):\n", ship.getName(),ship.getSize());
@@ -36,36 +98,7 @@ public class Main {
             }
         }
 
-        boolean gameWon = false;
-        startGame(field);
-        printTakeShot();
-        while (!gameWon) {
-
-                try {
-
-                    Coordinate shot = new Coordinate(sc.next());
-
-                    String checkShot = field.shoot(shot);
-
-                    field.printFogGrid();
-                    if (checkShot.equals("hit")) {
-                        System.out.println("You hit a ship! Try again:");
-
-                    } else if (checkShot.equals("miss")) {
-
-                        System.out.println("You missed. Try again:");
-
-                    }
-
-                } catch (InvalidCoordinateException e) {
-                    System.out.println("Error! You entered the wrong coordinates! Try again:");
-                }
-
-        }
-
     }
-
-
 
 
     public static void printTakeShot(){
